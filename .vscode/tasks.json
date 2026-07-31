@@ -1,0 +1,49 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "📤 SUBIR CAMBIOS",
+            "type": "shell",
+            "command": "4_subir_cambios.bat",
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "📥 BAJAR CAMBIOS",
+            "type": "shell",
+            "command": "3_bajar_cambios.bat",
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "📊 VER ESTADO",
+            "type": "shell",
+            "command": "6_ver_estado.bat",
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "🔀 CREAR PULL REQUEST",
+            "type": "shell",
+            "command": "5_crear_pull_request.bat",
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        }
+    ]
+}
