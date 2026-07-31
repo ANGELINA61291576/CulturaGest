@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CulturaGest - Profesores</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar -->
+        <div class="bg-dark text-white" id="sidebar-wrapper" style="min-height: 100vh; width: 260px; flex-shrink: 0;">
+            <div class="sidebar-heading text-center py-4 primary-text fs-4 fw-bold text-uppercase border-bottom border-secondary">
+                <i class="fas fa-landmark me-2"></i>CulturaGest
+            </div>
+            <div class="list-group list-group-flush my-3">
+                <a href="dashboard.html" class="list-group-item list-group-item-action bg-transparent text-white">
+                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                </a>
+                <a href="participantes.html" class="list-group-item list-group-item-action bg-transparent text-white">
+                    <i class="fas fa-users me-2"></i>Participantes
+                </a>
+                <a href="talleres.html" class="list-group-item list-group-item-action bg-transparent text-white">
+                    <i class="fas fa-chalkboard-teacher me-2"></i>Talleres
+                </a>
+                <a href="profesores.html" class="list-group-item list-group-item-action bg-transparent text-white active">
+                    <i class="fas fa-user-tie me-2"></i>Profesores
+                </a>
+                <a href="inscripciones.html" class="list-group-item list-group-item-action bg-transparent text-white">
+                    <i class="fas fa-pen-square me-2"></i>Inscripciones
+                </a>
+                <a href="asistencia.html" class="list-group-item list-group-item-action bg-transparent text-white">
+                    <i class="fas fa-clipboard-check me-2"></i>Asistencia
+                </a>
+                <a href="consultas.html" class="list-group-item list-group-item-action bg-transparent text-white">
+                    <i class="fas fa-question-circle me-2"></i>Consultas
+                </a>
+                <a href="reportes.html" class="list-group-item list-group-item-action bg-transparent text-white">
+                    <i class="fas fa-chart-bar me-2"></i>Reportes
+                </a>
+                <a href="administracion.html" class="list-group-item list-group-item-action bg-transparent text-white">
+                    <i class="fas fa-cog me-2"></i>Administración
+                </a>
+            </div>
+            <div class="list-group list-group-flush my-3 border-top border-secondary">
+                <a href="login.html" class="list-group-item list-group-item-action bg-transparent text-danger" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                </a>
+            </div>
+        </div>
+
+        <!-- Contenido principal -->
+        <div id="page-content-wrapper" class="w-100">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom px-4">
+                <div class="container-fluid">
+                    <button class="btn btn-primary" id="menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <span class="navbar-brand ms-3 fw-semibold">Gestión de Profesores</span>
+                    <div class="d-flex align-items-center ms-auto">
+                        <span class="me-3"><i class="fas fa-user-circle fa-lg"></i> <span id="userNameDisplay">Usuario</span></span>
+                        <span class="badge bg-primary">Administrador</span>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container-fluid px-4 py-4">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-user-tie me-2"></i>Lista de Profesores (Docentes)</h5>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registroProfesorModal">
+                            <i class="fas fa-plus"></i> Nuevo Profesor
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nombre</th>
+                                        <th>Apellido</th>
+                                        <th>Email</th>
+                                        <th>Especialidad</th>
+                                        <th>Tipo</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Juan</td>
+                                        <td>Pérez</td>
+                                        <td>juan.prof@email.com</td>
+                                        <td><span class="badge bg-primary">Música</span></td>
+                                        <td><span class="badge bg-success">Profesor</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>María</td>
+                                        <td>Gómez</td>
+                                        <td>maria.prof@email.com</td>
+                                        <td><span class="badge bg-primary">Danza</span></td>
+                                        <td><span class="badge bg-success">Profesor</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>Carlos</td>
+                                        <td>López</td>
+                                        <td>carlos.prof@email.com</td>
+                                        <td><span class="badge bg-primary">Pintura</span></td>
+                                        <td><span class="badge bg-success">Profesor</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Registrar Profesor -->
+    <div class="modal fade" id="registroProfesorModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-user-plus me-2"></i>Registrar Profesor (Docente)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="profesorForm">
+                        <div class="mb-3">
+                            <label class="form-label">Nombre *</label>
+                            <input type="text" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Apellido *</label>
+                            <input type="text" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email *</label>
+                            <input type="email" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Especialidad *</label>
+                            <select class="form-select" required>
+                                <option value="">Seleccionar...</option>
+                                <option>Música</option>
+                                <option>Danza</option>
+                                <option>Teatro</option>
+                                <option>Pintura</option>
+                                <option>Lectura</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tipo</label>
+                            <input type="text" class="form-control" value="Profesor" disabled>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="guardarProfesor">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/scripts.js"></script>
+    <script>
+        // Toggle sidebar
+        document.getElementById("menu-toggle").addEventListener("click", function() {
+            const sidebar = document.getElementById("sidebar-wrapper");
+            if (sidebar.style.display === "none") {
+                sidebar.style.display = "block";
+            } else {
+                sidebar.style.display = "none";
+            }
+        });
+
+        // Mostrar nombre de usuario
+        document.addEventListener('DOMContentLoaded', function() {
+            const userName = sessionStorage.getItem('userName') || 'Usuario';
+            document.getElementById('userNameDisplay').textContent = userName;
+        });
+
+        // Cerrar sesión
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm('¿Está seguro que desea cerrar sesión?')) {
+                sessionStorage.removeItem('loggedIn');
+                sessionStorage.removeItem('userEmail');
+                sessionStorage.removeItem('userName');
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Redirigir a login si no está logueado
+        document.addEventListener('DOMContentLoaded', function() {
+            if (sessionStorage.getItem('loggedIn') !== 'true') {
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Guardar profesor
+        document.getElementById("guardarProfesor").addEventListener("click", function() {
+            const nombre = document.querySelector("#profesorForm input:nth-child(1)").value;
+            const apellido = document.querySelector("#profesorForm input:nth-child(2)").value;
+
+            if (nombre && apellido) {
+                alert('✅ Profesor "' + nombre + ' ' + apellido + '" registrado correctamente.');
+                const modal = bootstrap.Modal.getInstance(document.getElementById('registroProfesorModal'));
+                modal.hide();
+                document.getElementById("profesorForm").reset();
+            } else {
+                alert('⚠️ Complete todos los campos obligatorios.');
+            }
+        });
+    </script>
+</body>
+</html>
