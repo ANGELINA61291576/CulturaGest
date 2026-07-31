@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CulturaGest - Reportes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar -->
+        <div class="bg-dark text-white" id="sidebar-wrapper" style="min-height: 100vh; width: 250px;">
+            <div class="sidebar-heading text-center py-4 primary-text fs-4 fw-bold text-uppercase border-bottom">
+                <i class="fas fa-landmark me-2"></i>CulturaGest
+            </div>
+            <div class="list-group list-group-flush my-3">
+                <a href="dashboard.html" class="list-group-item list-group-item-action bg-transparent text-white">
+                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                </a>
+                <a href="participantes.html" class="list-group-item list-group-item-action bg-transparent text-white">
+                    <i class="fas fa-users me-2"></i>Participantes
+                </a>
+                <a href="talleres.html" class="list-group-item list-group-item-action bg-transparent text-white">
+                    <i class="fas fa-chalkboard-teacher me-2"></i>Talleres
+                </a>
+                <a href="profesores.html" class="list-group-item list-group-item-action bg-transparent text-white">
+                    <i class="fas fa-user-tie me-2"></i>Profesores
+                </a>
+                <a href="inscripciones.html" class="list-group-item list-group-item-action bg-transparent text-white">
+                    <i class="fas fa-pen-square me-2"></i>Inscripciones
+                </a>
+                <a href="asistencia.html" class="list-group-item list-group-item-action bg-transparent text-white">
+                    <i class="fas fa-clipboard-check me-2"></i>Asistencia
+                </a>
+                <a href="consultas.html" class="list-group-item list-group-item-action bg-transparent text-white">
+                    <i class="fas fa-question-circle me-2"></i>Consultas
+                </a>
+                <a href="reportes.html" class="list-group-item list-group-item-action bg-transparent text-white active">
+                    <i class="fas fa-chart-bar me-2"></i>Reportes
+                </a>
+                <a href="administracion.html" class="list-group-item list-group-item-action bg-transparent text-white">
+                    <i class="fas fa-cog me-2"></i>Administración
+                </a>
+            </div>
+        </div>
+
+        <!-- Contenido principal -->
+        <div id="page-content-wrapper" class="w-100">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <div class="container-fluid">
+                    <button class="btn btn-primary" id="menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <span class="navbar-brand ms-3">Reportes</span>
+                </div>
+            </nav>
+
+            <div class="container-fluid px-4">
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Filtros de Reportes</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label class="form-label">Tipo de Reporte</label>
+                                        <select class="form-select">
+                                            <option>Participantes</option>
+                                            <option>Talleres</option>
+                                            <option>Inscripciones</option>
+                                            <option>Asistencia</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Fecha Inicio</label>
+                                        <input type="date" class="form-control" value="2026-07-01">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Fecha Fin</label>
+                                        <input type="date" class="form-control" value="2026-07-31">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">&nbsp;</label>
+                                        <button class="btn btn-primary w-100"><i class="fas fa-file-pdf"></i> Generar Reporte</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-users me-2"></i>Participantes por Taller</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Taller</th>
+                                                <th>Inscritos</th>
+                                                <th>% Ocupación</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Música</td>
+                                                <td>15</td>
+                                                <td><div class="progress"><div class="progress-bar" style="width:75%">75%</div></div></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Danza</td>
+                                                <td>10</td>
+                                                <td><div class="progress"><div class="progress-bar" style="width:67%">67%</div></div></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Pintura</td>
+                                                <td>8</td>
+                                                <td><div class="progress"><div class="progress-bar" style="width:80%">80%</div></div></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-clipboard-check me-2"></i>Resumen de Asistencia</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Taller</th>
+                                                <th>Presentes</th>
+                                                <th>Ausentes</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Música</td>
+                                                <td><span class="badge bg-success">12</span></td>
+                                                <td><span class="badge bg-danger">3</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Danza</td>
+                                                <td><span class="badge bg-success">8</span></td>
+                                                <td><span class="badge bg-danger">2</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Pintura</td>
+                                                <td><span class="badge bg-success">6</span></td>
+                                                <td><span class="badge bg-danger">2</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-file-alt me-2"></i>Reportes Generados</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="list-group">
+                                    <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <i class="fas fa-file-pdf text-danger me-2"></i>
+                                            Reporte de Inscripciones - Julio 2026
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-primary"><i class="fas fa-download"></i></button>
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <i class="fas fa-file-pdf text-danger me-2"></i>
+                                            Reporte de Asistencia - Semana 3
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-primary"><i class="fas fa-download"></i></button>
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <i class="fas fa-file-excel text-success me-2"></i>
+                                            Lista de Participantes - Activos
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-primary"><i class="fas fa-download"></i></button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/scripts.js"></script>
+    <script>
+        document.getElementById("menu-toggle").addEventListener("click", function() {
+            document.getElementById("sidebar-wrapper").classList.toggle("d-none");
+        });
+    </script>
+</body>
+</html>
