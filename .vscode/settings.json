@@ -1,0 +1,9 @@
+{
+    "rest-client.rememberCookiesForSubsequentRequests": true,
+    "rest-client.followredirect": true,
+    "rest-client.defaultHeaders": {
+        "User-Agent": "REST Client",
+        "Accept": "application/json"
+    },
+    "rest-client.saveResponseTo": "backend/tests/respuestas/"
+}
