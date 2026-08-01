@@ -89,6 +89,7 @@ const inscripcionRoutes = require('./routes/inscripciones');
 const asistenciaRoutes = require('./routes/asistencia');
 const consultaRoutes = require('./routes/consultas');
 const reporteRoutes = require('./routes/reportes');
+const usuarioRoutes = require('./routes/usuarios');  // ✅ AGREGADO
 
 // =========================================
 // ✅ REGISTRAR RUTAS
@@ -114,6 +115,9 @@ console.log('✅ /api/consultas registrada');
 
 app.use('/api/reportes', reporteRoutes);
 console.log('✅ /api/reportes registrada');
+
+app.use('/api/usuarios', usuarioRoutes);  // ✅ AGREGADO
+console.log('✅ /api/usuarios registrada');
 
 // =========================================
 // 404 - Ruta no encontrada

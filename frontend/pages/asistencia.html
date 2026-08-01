@@ -67,47 +67,61 @@
             </nav>
 
             <div class="container-fluid px-4 py-4">
-                <div class="card">
+                <!-- Formulario para tomar asistencia -->
+                <div class="card mb-4">
                     <div class="card-header">
                         <h5 class="mb-0"><i class="fas fa-clipboard-check me-2"></i>Tomar Asistencia</h5>
                     </div>
                     <div class="card-body">
-                        <div class="row mb-3">
+                        <div class="row">
                             <div class="col-md-4">
                                 <label class="form-label">Taller</label>
-                                <select class="form-select" id="asistenciaTaller">
-                                    <option>Música</option>
-                                    <option>Danza</option>
-                                    <option>Pintura</option>
-                                    <option>Teatro</option>
+                                <select class="form-select" id="tallerSelect">
+                                    <option value="">Seleccionar taller...</option>
                                 </select>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label class="form-label">Fecha</label>
-                                <input type="date" class="form-control" id="asistenciaFecha" value="2026-07-31">
+                                <input type="date" class="form-control" id="fechaAsistencia">
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label class="form-label">&nbsp;</label>
-                                <button class="btn btn-primary w-100"><i class="fas fa-search"></i> Cargar Lista</button>
+                                <button class="btn btn-primary w-100" id="btnCargarLista">
+                                    <i class="fas fa-search"></i> Cargar Lista
+                                </button>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">&nbsp;</label>
+                                <button class="btn btn-success w-100" id="btnGuardarAsistencia">
+                                    <i class="fas fa-save"></i> Guardar
+                                </button>
                             </div>
                         </div>
-                        <div class="table-responsive mt-3">
+                    </div>
+                </div>
+
+                <!-- Tabla de asistencia -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-list me-2"></i>Registro de Asistencia</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead class="table-dark">
                                     <tr>
                                         <th>ID</th>
                                         <th>Participante</th>
-                                        <th class="text-center">Asistencia</th>
+                                        <th>Taller</th>
+                                        <th>Fecha</th>
+                                        <th>Estado</th>
                                         <th>Observación</th>
                                     </tr>
                                 </thead>
                                 <tbody id="asistenciaTable">
-                                    <!-- Cargado desde la API -->
+                                    <!-- Los datos se cargan desde la API -->
                                 </tbody>
                             </table>
-                        </div>
-                        <div class="text-end">
-                            <button class="btn btn-success"><i class="fas fa-save"></i> Guardar Asistencia</button>
                         </div>
                     </div>
                 </div>
@@ -115,11 +129,35 @@
         </div>
     </div>
 
+    <!-- Modal para registrar asistencia de participantes -->
+    <div class="modal fade" id="asistenciaModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-clipboard-check me-2"></i>Registrar Asistencia</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="listaAsistencia">
+                        <!-- Los participantes se cargan aquí -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-success" id="btnGuardarAsistenciaModal">
+                        <i class="fas fa-save"></i> Guardar Asistencia
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../js/scripts.js"></script>
     <script>
+        console.log('🚀 Script de asistencia cargado correctamente');
+
         // =========================================
-        // 1. TOGGLE SIDEBAR
+        // TOGGLE SIDEBAR
         // =========================================
         document.getElementById("menu-toggle").addEventListener("click", function() {
             const sidebar = document.getElementById("sidebar-wrapper");
@@ -131,17 +169,19 @@
         });
 
         // =========================================
-        // 2. MOSTRAR NOMBRE Y ROL DE USUARIO
+        // MOSTRAR NOMBRE Y ROL
         // =========================================
         document.addEventListener('DOMContentLoaded', function() {
             const userName = sessionStorage.getItem('userName') || 'Usuario';
             const userRol = sessionStorage.getItem('userRol') || 'Administrador';
             document.getElementById('userNameDisplay').textContent = userName;
             document.getElementById('userRolDisplay').textContent = userRol;
+            // Fecha por defecto
+            document.getElementById('fechaAsistencia').value = new Date().toISOString().split('T')[0];
         });
 
         // =========================================
-        // 3. CERRAR SESIÓN
+        // CERRAR SESIÓN
         // =========================================
         document.getElementById('logoutBtn').addEventListener('click', function(e) {
             e.preventDefault();
@@ -156,12 +196,270 @@
         });
 
         // =========================================
-        // 4. REDIRIGIR A LOGIN SI NO ESTÁ LOGUEADO
+        // REDIRIGIR A LOGIN
         // =========================================
         document.addEventListener('DOMContentLoaded', function() {
             if (sessionStorage.getItem('loggedIn') !== 'true') {
                 window.location.href = 'login.html';
             }
+        });
+
+        // =========================================
+        // CARGAR TALLERES PARA EL SELECT
+        // =========================================
+        async function cargarTalleresSelect() {
+            try {
+                const token = sessionStorage.getItem('token');
+                if (!token) return;
+
+                const response = await fetch('http://localhost:3000/api/talleres', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    const select = document.getElementById('tallerSelect');
+                    select.innerHTML = '<option value="">Seleccionar taller...</option>';
+                    data.data.forEach(t => {
+                        const option = document.createElement('option');
+                        option.value = t.id;
+                        option.textContent = t.nombre + ' (' + t.cupos_disponibles + ' cupos)';
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error al cargar talleres:', error);
+            }
+        }
+
+        // =========================================
+        // CARGAR LISTA DE PARTICIPANTES PARA ASISTENCIA
+        // =========================================
+        document.getElementById("btnCargarLista").addEventListener("click", async function() {
+            const tallerId = document.getElementById("tallerSelect").value;
+            const fecha = document.getElementById("fechaAsistencia").value;
+
+            if (!tallerId) {
+                alert('⚠️ Seleccione un taller.');
+                return;
+            }
+
+            if (!fecha) {
+                alert('⚠️ Seleccione una fecha.');
+                return;
+            }
+
+            try {
+                const token = sessionStorage.getItem('token');
+                if (!token) {
+                    alert('❌ No hay sesión activa.');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                // Obtener inscripciones del taller
+                const response = await fetch('http://localhost:3000/api/inscripciones', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    const inscripciones = data.data.filter(i => i.taller_id == tallerId && i.estado === 'activo');
+                    
+                    if (inscripciones.length === 0) {
+                        alert('⚠️ No hay participantes inscritos en este taller.');
+                        return;
+                    }
+
+                    const container = document.getElementById('listaAsistencia');
+                    container.innerHTML = `
+                        <p class="text-muted">Registrando asistencia para ${inscripciones.length} participantes</p>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Participante</th>
+                                        <th>Asistencia</th>
+                                        <th>Observación</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="asistenciaListaBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+
+                    const tbody = document.getElementById('asistenciaListaBody');
+                    inscripciones.forEach(i => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${i.participante || 'ID ' + i.participante_id}</td>
+                            <td>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="asistencia_${i.id}" value="1" checked>
+                                    <label class="form-check-label">Presente</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="asistencia_${i.id}" value="0">
+                                    <label class="form-check-label">Ausente</label>
+                                </div>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm" placeholder="Observación" id="obs_${i.id}">
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+
+                    // Abrir modal
+                    const modal = new bootstrap.Modal(document.getElementById('asistenciaModal'));
+                    modal.show();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error de conexión con el servidor.');
+            }
+        });
+
+        // =========================================
+        // GUARDAR ASISTENCIA DESDE MODAL
+        // =========================================
+        document.getElementById("btnGuardarAsistenciaModal").addEventListener("click", async function() {
+            const tallerId = document.getElementById("tallerSelect").value;
+            const fecha = document.getElementById("fechaAsistencia").value;
+
+            try {
+                const token = sessionStorage.getItem('token');
+                if (!token) {
+                    alert('❌ No hay sesión activa.');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                // Obtener inscripciones del taller
+                const response = await fetch('http://localhost:3000/api/inscripciones', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    const inscripciones = data.data.filter(i => i.taller_id == tallerId && i.estado === 'activo');
+                    let guardados = 0;
+
+                    for (const i of inscripciones) {
+                        const presente = document.querySelector(`input[name="asistencia_${i.id}"]:checked`);
+                        const observacion = document.getElementById(`obs_${i.id}`).value;
+
+                        if (presente) {
+                            const asistenciaResponse = await fetch('http://localhost:3000/api/asistencia', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': 'Bearer ' + token
+                                },
+                                body: JSON.stringify({
+                                    inscripcion_id: i.id,
+                                    fecha: fecha,
+                                    presente: parseInt(presente.value),
+                                    observacion: observacion || ''
+                                })
+                            });
+
+                            const result = await asistenciaResponse.json();
+                            if (result.success) {
+                                guardados++;
+                            }
+                        }
+                    }
+
+                    alert(`✅ Asistencia guardada correctamente para ${guardados} participantes.`);
+                    
+                    // Cerrar modal y recargar tabla
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('asistenciaModal'));
+                    modal.hide();
+                    await cargarAsistencia();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error al guardar la asistencia.');
+            }
+        });
+
+        // =========================================
+        // CARGAR ASISTENCIA
+        // =========================================
+        async function cargarAsistencia() {
+            console.log('🔄 cargarAsistencia() ejecutado...');
+            try {
+                const token = sessionStorage.getItem('token');
+                if (!token) {
+                    console.warn('⚠️ No hay token de autenticación');
+                    return;
+                }
+
+                const response = await fetch('http://localhost:3000/api/asistencia', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                console.log('📊 Datos recibidos:', data);
+
+                if (data.success) {
+                    const tbody = document.getElementById('asistenciaTable');
+                    tbody.innerHTML = '';
+
+                    if (data.data.length === 0) {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-3">
+                                    No hay registros de asistencia
+                                </td>
+                            </tr>
+                        `;
+                        return;
+                    }
+
+                    data.data.forEach(a => {
+                        const tr = document.createElement('tr');
+                        const estado = a.presente ? 'Presente' : 'Ausente';
+                        const badgeClass = a.presente ? 'bg-success' : 'bg-danger';
+                        tr.innerHTML = `
+                            <td>${a.id}</td>
+                            <td>${a.participante || 'ID ' + a.inscripcion_id}</td>
+                            <td>${a.taller || '-'}</td>
+                            <td>${a.fecha}</td>
+                            <td><span class="badge ${badgeClass}">${estado}</span></td>
+                            <td>${a.observacion || '-'}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                    console.log('✅ Tabla actualizada con', data.data.length, 'registros');
+                }
+            } catch (error) {
+                console.error('❌ Error al cargar asistencia:', error);
+            }
+        }
+
+        // =========================================
+        // FORZAR CARGA AL INICIAR
+        // =========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                cargarTalleresSelect();
+                cargarAsistencia();
+            }, 500);
         });
     </script>
 </body>

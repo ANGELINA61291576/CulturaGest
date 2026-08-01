@@ -68,6 +68,7 @@
 
             <div class="container-fluid px-4 py-4">
                 <div class="row">
+                    <!-- Formulario nueva consulta -->
                     <div class="col-lg-6">
                         <div class="card">
                             <div class="card-header">
@@ -77,13 +78,13 @@
                                 <form id="consultaForm">
                                     <div class="mb-3">
                                         <label class="form-label">Participante *</label>
-                                        <select class="form-select" id="consultaParticipante" required>
+                                        <select class="form-select" id="participante_id" required>
                                             <option value="">Seleccionar...</option>
                                         </select>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Tipo de Consulta *</label>
-                                        <select class="form-select" id="consultaTipo" required>
+                                        <select class="form-select" id="tipo_consulta" required>
                                             <option value="">Seleccionar...</option>
                                             <option>Información de talleres</option>
                                             <option>Inscripciones</option>
@@ -94,20 +95,26 @@
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Descripción *</label>
-                                        <textarea class="form-control" id="consultaDescripcion" rows="4" required></textarea>
+                                        <textarea class="form-control" id="descripcion" rows="4" required></textarea>
                                     </div>
-                                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Registrar Consulta</button>
+                                    <button type="button" class="btn btn-primary" id="btnRegistrarConsulta">
+                                        <i class="fas fa-save"></i> Registrar Consulta
+                                    </button>
                                 </form>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Historial de consultas -->
                     <div class="col-lg-6">
                         <div class="card">
                             <div class="card-header">
                                 <h5 class="mb-0"><i class="fas fa-history me-2"></i>Historial de Consultas</h5>
                             </div>
-                            <div class="card-body" id="historialConsultas">
-                                <!-- Cargado desde la API -->
+                            <div class="card-body">
+                                <div id="historialConsultas">
+                                    <!-- Cargado desde la API -->
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -117,10 +124,11 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../js/scripts.js"></script>
     <script>
+        console.log('🚀 Script de consultas cargado correctamente');
+
         // =========================================
-        // 1. TOGGLE SIDEBAR
+        // TOGGLE SIDEBAR
         // =========================================
         document.getElementById("menu-toggle").addEventListener("click", function() {
             const sidebar = document.getElementById("sidebar-wrapper");
@@ -132,7 +140,7 @@
         });
 
         // =========================================
-        // 2. MOSTRAR NOMBRE Y ROL DE USUARIO
+        // MOSTRAR NOMBRE Y ROL
         // =========================================
         document.addEventListener('DOMContentLoaded', function() {
             const userName = sessionStorage.getItem('userName') || 'Usuario';
@@ -142,7 +150,7 @@
         });
 
         // =========================================
-        // 3. CERRAR SESIÓN
+        // CERRAR SESIÓN
         // =========================================
         document.getElementById('logoutBtn').addEventListener('click', function(e) {
             e.preventDefault();
@@ -157,12 +165,206 @@
         });
 
         // =========================================
-        // 4. REDIRIGIR A LOGIN SI NO ESTÁ LOGUEADO
+        // REDIRIGIR A LOGIN
         // =========================================
         document.addEventListener('DOMContentLoaded', function() {
             if (sessionStorage.getItem('loggedIn') !== 'true') {
                 window.location.href = 'login.html';
             }
+        });
+
+        // =========================================
+        // CARGAR PARTICIPANTES PARA EL SELECT
+        // =========================================
+        async function cargarParticipantesSelect() {
+            try {
+                const token = sessionStorage.getItem('token');
+                if (!token) return;
+
+                const response = await fetch('http://localhost:3000/api/participantes', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    const select = document.getElementById('participante_id');
+                    select.innerHTML = '<option value="">Seleccionar...</option>';
+                    data.data.forEach(p => {
+                        const option = document.createElement('option');
+                        option.value = p.id;
+                        option.textContent = p.nombre + ' ' + p.apellido;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error al cargar participantes:', error);
+            }
+        }
+
+        // =========================================
+        // REGISTRAR CONSULTA
+        // =========================================
+        document.getElementById("btnRegistrarConsulta").addEventListener("click", async function() {
+            const participante_id = document.getElementById("participante_id").value;
+            const tipo = document.getElementById("tipo_consulta").value;
+            const descripcion = document.getElementById("descripcion").value.trim();
+
+            if (!participante_id || !tipo || !descripcion) {
+                alert('⚠️ Complete todos los campos obligatorios.');
+                return;
+            }
+
+            try {
+                const token = sessionStorage.getItem('token');
+                if (!token) {
+                    alert('❌ No hay sesión activa.');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const response = await fetch('http://localhost:3000/api/consultas', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({
+                        participante_id: parseInt(participante_id),
+                        tipo: tipo,
+                        descripcion: descripcion
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('✅ Consulta registrada correctamente.');
+                    document.getElementById("consultaForm").reset();
+                    await cargarConsultas();
+                } else {
+                    alert('❌ Error: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error de conexión con el servidor.');
+            }
+        });
+
+        // =========================================
+        // CARGAR CONSULTAS
+        // =========================================
+        async function cargarConsultas() {
+            console.log('🔄 cargarConsultas() ejecutado...');
+            try {
+                const token = sessionStorage.getItem('token');
+                if (!token) {
+                    console.warn('⚠️ No hay token de autenticación');
+                    return;
+                }
+
+                const response = await fetch('http://localhost:3000/api/consultas', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                console.log('📊 Datos recibidos:', data);
+
+                if (data.success) {
+                    const container = document.getElementById('historialConsultas');
+                    container.innerHTML = '';
+
+                    if (data.data.length === 0) {
+                        container.innerHTML = `
+                            <div class="text-center text-muted py-3">
+                                No hay consultas registradas
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    data.data.forEach(c => {
+                        const estadoBadge = c.estado === 'atendido' ? 'bg-success' : 'bg-warning';
+                        const div = document.createElement('div');
+                        div.className = 'list-group-item';
+                        div.innerHTML = `
+                            <div class="d-flex justify-content-between">
+                                <strong>${c.participante || 'ID ' + c.participante_id}</strong>
+                                <span class="badge bg-primary">${c.tipo}</span>
+                            </div>
+                            <p class="mb-1">${c.descripcion}</p>
+                            <small class="text-muted">${new Date(c.fecha_consulta).toLocaleString()}</small>
+                            <span class="badge ${estadoBadge} ms-2">${c.estado}</span>
+                            ${c.estado === 'pendiente' ? `
+                                <button class="btn btn-sm btn-success ms-2 marcar-atendido" data-id="${c.id}">
+                                    <i class="fas fa-check"></i> Atender
+                                </button>
+                            ` : ''}
+                        `;
+                        container.appendChild(div);
+                    });
+
+                    // Eventos para marcar como atendido
+                    document.querySelectorAll('.marcar-atendido').forEach(btn => {
+                        btn.addEventListener('click', marcarAtendido);
+                    });
+                }
+            } catch (error) {
+                console.error('❌ Error al cargar consultas:', error);
+            }
+        }
+
+        // =========================================
+        // MARCAR CONSULTA COMO ATENDIDA
+        // =========================================
+        async function marcarAtendido(e) {
+            const id = e.currentTarget.dataset.id;
+            if (!confirm('¿Marcar esta consulta como atendida?')) return;
+
+            try {
+                const token = sessionStorage.getItem('token');
+                if (!token) {
+                    alert('❌ No hay sesión activa.');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const response = await fetch(`http://localhost:3000/api/consultas/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ estado: 'atendido' })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('✅ Consulta marcada como atendida.');
+                    await cargarConsultas();
+                } else {
+                    alert('❌ Error: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error de conexión con el servidor.');
+            }
+        }
+
+        // =========================================
+        // FORZAR CARGA AL INICIAR
+        // =========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                cargarParticipantesSelect();
+                cargarConsultas();
+            }, 500);
         });
     </script>
 </body>

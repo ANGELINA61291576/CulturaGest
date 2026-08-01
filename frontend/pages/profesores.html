@@ -61,7 +61,7 @@
                     <span class="navbar-brand ms-3 fw-semibold">Gestión de Profesores</span>
                     <div class="d-flex align-items-center ms-auto">
                         <span class="me-3"><i class="fas fa-user-circle fa-lg"></i> <span id="userNameDisplay">Usuario</span></span>
-                        <span class="badge bg-primary">Administrador</span>
+                        <span class="badge bg-primary" id="userRolDisplay">Administrador</span>
                     </div>
                 </div>
             </nav>
@@ -75,6 +75,18 @@
                         </button>
                     </div>
                     <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    <input type="text" class="form-control" id="searchInput" placeholder="Buscar profesor...">
+                                </div>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <button class="btn btn-outline-secondary"><i class="fas fa-download"></i> Exportar</button>
+                            </div>
+                        </div>
+
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead class="table-dark">
@@ -84,47 +96,12 @@
                                         <th>Apellido</th>
                                         <th>Email</th>
                                         <th>Especialidad</th>
-                                        <th>Tipo</th>
+                                        <th>Teléfono</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>Juan</td>
-                                        <td>Pérez</td>
-                                        <td>juan.prof@email.com</td>
-                                        <td><span class="badge bg-primary">Música</span></td>
-                                        <td><span class="badge bg-success">Profesor</span></td>
-                                        <td>
-                                            <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
-                                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>María</td>
-                                        <td>Gómez</td>
-                                        <td>maria.prof@email.com</td>
-                                        <td><span class="badge bg-primary">Danza</span></td>
-                                        <td><span class="badge bg-success">Profesor</span></td>
-                                        <td>
-                                            <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
-                                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>3</td>
-                                        <td>Carlos</td>
-                                        <td>López</td>
-                                        <td>carlos.prof@email.com</td>
-                                        <td><span class="badge bg-primary">Pintura</span></td>
-                                        <td><span class="badge bg-success">Profesor</span></td>
-                                        <td>
-                                            <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
-                                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
-                                        </td>
-                                    </tr>
+                                <tbody id="profesoresTable">
+                                    <!-- Los datos se cargan desde la API -->
                                 </tbody>
                             </table>
                         </div>
@@ -145,20 +122,20 @@
                 <div class="modal-body">
                     <form id="profesorForm">
                         <div class="mb-3">
-                            <label class="form-label">Nombre *</label>
-                            <input type="text" class="form-control" required>
+                            <label for="nombre" class="form-label">Nombre *</label>
+                            <input type="text" class="form-control" id="nombre" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Apellido *</label>
-                            <input type="text" class="form-control" required>
+                            <label for="apellido" class="form-label">Apellido *</label>
+                            <input type="text" class="form-control" id="apellido" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Email *</label>
-                            <input type="email" class="form-control" required>
+                            <label for="email" class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="email" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Especialidad *</label>
-                            <select class="form-select" required>
+                            <label for="especialidad" class="form-label">Especialidad *</label>
+                            <select class="form-select" id="especialidad" required>
                                 <option value="">Seleccionar...</option>
                                 <option>Música</option>
                                 <option>Danza</option>
@@ -168,8 +145,8 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Tipo</label>
-                            <input type="text" class="form-control" value="Profesor" disabled>
+                            <label for="telefono" class="form-label">Teléfono</label>
+                            <input type="tel" class="form-control" id="telefono">
                         </div>
                     </form>
                 </div>
@@ -184,9 +161,12 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../js/scripts.js"></script>
     <script>
-        // Toggle sidebar
+        console.log('🚀 Script de profesores cargado correctamente');
+
+        // =========================================
+        // TOGGLE SIDEBAR
+        // =========================================
         document.getElementById("menu-toggle").addEventListener("click", function() {
             const sidebar = document.getElementById("sidebar-wrapper");
             if (sidebar.style.display === "none") {
@@ -196,43 +176,171 @@
             }
         });
 
-        // Mostrar nombre de usuario
+        // =========================================
+        // MOSTRAR NOMBRE Y ROL
+        // =========================================
         document.addEventListener('DOMContentLoaded', function() {
             const userName = sessionStorage.getItem('userName') || 'Usuario';
+            const userRol = sessionStorage.getItem('userRol') || 'Administrador';
             document.getElementById('userNameDisplay').textContent = userName;
+            document.getElementById('userRolDisplay').textContent = userRol;
         });
 
-        // Cerrar sesión
+        // =========================================
+        // CERRAR SESIÓN
+        // =========================================
         document.getElementById('logoutBtn').addEventListener('click', function(e) {
             e.preventDefault();
             if (confirm('¿Está seguro que desea cerrar sesión?')) {
                 sessionStorage.removeItem('loggedIn');
                 sessionStorage.removeItem('userEmail');
                 sessionStorage.removeItem('userName');
+                sessionStorage.removeItem('userRol');
+                sessionStorage.removeItem('token');
                 window.location.href = 'login.html';
             }
         });
 
-        // Redirigir a login si no está logueado
+        // =========================================
+        // REDIRIGIR A LOGIN
+        // =========================================
         document.addEventListener('DOMContentLoaded', function() {
             if (sessionStorage.getItem('loggedIn') !== 'true') {
                 window.location.href = 'login.html';
             }
         });
 
-        // Guardar profesor
-        document.getElementById("guardarProfesor").addEventListener("click", function() {
-            const nombre = document.querySelector("#profesorForm input:nth-child(1)").value;
-            const apellido = document.querySelector("#profesorForm input:nth-child(2)").value;
+        // =========================================
+        // CARGAR PROFESORES
+        // =========================================
+        async function cargarProfesores() {
+            console.log('🔄 cargarProfesores() ejecutado...');
+            try {
+                const token = sessionStorage.getItem('token');
+                if (!token) {
+                    console.warn('⚠️ No hay token de autenticación');
+                    return;
+                }
 
-            if (nombre && apellido) {
-                alert('✅ Profesor "' + nombre + ' ' + apellido + '" registrado correctamente.');
-                const modal = bootstrap.Modal.getInstance(document.getElementById('registroProfesorModal'));
-                modal.hide();
-                document.getElementById("profesorForm").reset();
-            } else {
-                alert('⚠️ Complete todos los campos obligatorios.');
+                const response = await fetch('http://localhost:3000/api/profesores', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                console.log('📊 Datos recibidos:', data);
+
+                if (data.success) {
+                    const tbody = document.getElementById('profesoresTable');
+                    tbody.innerHTML = '';
+
+                    if (data.data.length === 0) {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-3">
+                                    No hay profesores registrados
+                                </td>
+                            </tr>
+                        `;
+                        return;
+                    }
+
+                    data.data.forEach(p => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${p.id}</td>
+                            <td>${p.nombre}</td>
+                            <td>${p.apellido}</td>
+                            <td>${p.email}</td>
+                            <td><span class="badge bg-primary">${p.especialidad}</span></td>
+                            <td>${p.telefono || '-'}</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                    console.log('✅ Tabla actualizada con', data.data.length, 'profesores');
+                }
+            } catch (error) {
+                console.error('❌ Error al cargar profesores:', error);
             }
+        }
+
+        // =========================================
+        // GUARDAR PROFESOR
+        // =========================================
+        document.getElementById("guardarProfesor").addEventListener("click", async function() {
+            const nombre = document.getElementById("nombre").value.trim();
+            const apellido = document.getElementById("apellido").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const especialidad = document.getElementById("especialidad").value;
+            const telefono = document.getElementById("telefono").value.trim();
+
+            if (!nombre || !apellido || !email || !especialidad) {
+                alert('⚠️ Complete todos los campos obligatorios.');
+                return;
+            }
+
+            try {
+                const token = sessionStorage.getItem('token');
+                if (!token) {
+                    alert('❌ No hay sesión activa.');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const response = await fetch('http://localhost:3000/api/profesores', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({
+                        nombre: nombre,
+                        apellido: apellido,
+                        email: email,
+                        especialidad: especialidad,
+                        telefono: telefono || ''
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('✅ Profesor "' + nombre + ' ' + apellido + '" registrado correctamente.');
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('registroProfesorModal'));
+                    modal.hide();
+                    document.getElementById("profesorForm").reset();
+                    await cargarProfesores();
+                } else {
+                    alert('❌ Error: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error de conexión con el servidor.');
+            }
+        });
+
+        // =========================================
+        // BÚSQUEDA
+        // =========================================
+        document.getElementById("searchInput").addEventListener("keyup", function() {
+            const filter = this.value.toLowerCase();
+            const rows = document.querySelectorAll("#profesoresTable tr");
+            rows.forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(filter) ? "" : "none";
+            });
+        });
+
+        // =========================================
+        // FORZAR CARGA AL INICIAR
+        // =========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(cargarProfesores, 500);
         });
     </script>
 </body>

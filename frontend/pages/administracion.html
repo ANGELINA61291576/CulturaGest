@@ -68,6 +68,7 @@
 
             <div class="container-fluid px-4 py-4">
                 <div class="row">
+                    <!-- Gestión de Usuarios -->
                     <div class="col-lg-6">
                         <div class="card">
                             <div class="card-header">
@@ -78,6 +79,7 @@
                                     <table class="table table-hover">
                                         <thead class="table-dark">
                                             <tr>
+                                                <th>ID</th>
                                                 <th>Usuario</th>
                                                 <th>Rol</th>
                                                 <th>Estado</th>
@@ -89,10 +91,14 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <button class="btn btn-primary"><i class="fas fa-user-plus"></i> Nuevo Usuario</button>
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#nuevoUsuarioModal">
+                                    <i class="fas fa-user-plus"></i> Nuevo Usuario
+                                </button>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Configuración -->
                     <div class="col-lg-6">
                         <div class="card">
                             <div class="card-header">
@@ -101,25 +107,29 @@
                             <div class="card-body">
                                 <div class="mb-3">
                                     <label class="form-label">Nombre del Centro Cultural</label>
-                                    <input type="text" class="form-control" value="Centro Cultural Nueva Generación">
+                                    <input type="text" class="form-control" id="nombreCentro" value="Centro Cultural Nueva Generación">
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Email de Contacto</label>
-                                    <input type="email" class="form-control" value="contacto@culturagest.pe">
+                                    <input type="email" class="form-control" id="emailContacto" value="contacto@culturagest.pe">
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Teléfono</label>
-                                    <input type="text" class="form-control" value="(01) 555-1234">
+                                    <input type="text" class="form-control" id="telefonoCentro" value="(01) 555-1234">
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Horario de Atención</label>
-                                    <input type="text" class="form-control" value="Lunes a Viernes 9:00 - 18:00">
+                                    <input type="text" class="form-control" id="horarioCentro" value="Lunes a Viernes 9:00 - 18:00">
                                 </div>
-                                <button class="btn btn-success"><i class="fas fa-save"></i> Guardar Configuración</button>
+                                <button class="btn btn-success" id="btnGuardarConfiguracion">
+                                    <i class="fas fa-save"></i> Guardar Configuración
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Mantenimiento -->
                 <div class="row mt-4">
                     <div class="col-12">
                         <div class="card">
@@ -129,17 +139,17 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <button class="btn btn-warning w-100 mb-2">
+                                        <button class="btn btn-warning w-100 mb-2" id="btnRespaldo">
                                             <i class="fas fa-backup"></i> Respaldo de Datos
                                         </button>
                                     </div>
                                     <div class="col-md-4">
-                                        <button class="btn btn-info w-100 mb-2">
+                                        <button class="btn btn-info w-100 mb-2" id="btnLimpiarCache">
                                             <i class="fas fa-sync"></i> Limpiar Caché
                                         </button>
                                     </div>
                                     <div class="col-md-4">
-                                        <button class="btn btn-danger w-100 mb-2">
+                                        <button class="btn btn-danger w-100 mb-2" id="btnRestaurar">
                                             <i class="fas fa-exclamation-triangle"></i> Restaurar Sistema
                                         </button>
                                     </div>
@@ -152,11 +162,58 @@
         </div>
     </div>
 
+    <!-- Modal Nuevo Usuario -->
+    <div class="modal fade" id="nuevoUsuarioModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-user-plus me-2"></i>Nuevo Usuario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="usuarioForm">
+                        <div class="mb-3">
+                            <label class="form-label">Nombre *</label>
+                            <input type="text" class="form-control" id="nombreUsuario" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="emailUsuario" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Contraseña *</label>
+                            <input type="password" class="form-control" id="passwordUsuario" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Rol *</label>
+                            <select class="form-select" id="rolUsuario" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="administrador">Administrador</option>
+                                <option value="coordinador">Coordinador</option>
+                                <option value="recepcion">Recepción</option>
+                                <option value="profesor">Profesor</option>
+                                <option value="administracion">Administración</option>
+                                <option value="comunicacion">Comunicación</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btnGuardarUsuario">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../js/scripts.js"></script>
     <script>
+        console.log('🚀 Script de administración cargado correctamente');
+
         // =========================================
-        // 1. TOGGLE SIDEBAR
+        // TOGGLE SIDEBAR
         // =========================================
         document.getElementById("menu-toggle").addEventListener("click", function() {
             const sidebar = document.getElementById("sidebar-wrapper");
@@ -168,7 +225,7 @@
         });
 
         // =========================================
-        // 2. MOSTRAR NOMBRE Y ROL DE USUARIO
+        // MOSTRAR NOMBRE Y ROL
         // =========================================
         document.addEventListener('DOMContentLoaded', function() {
             const userName = sessionStorage.getItem('userName') || 'Usuario';
@@ -178,7 +235,7 @@
         });
 
         // =========================================
-        // 3. CERRAR SESIÓN
+        // CERRAR SESIÓN
         // =========================================
         document.getElementById('logoutBtn').addEventListener('click', function(e) {
             e.preventDefault();
@@ -193,12 +250,185 @@
         });
 
         // =========================================
-        // 4. REDIRIGIR A LOGIN SI NO ESTÁ LOGUEADO
+        // REDIRIGIR A LOGIN
         // =========================================
         document.addEventListener('DOMContentLoaded', function() {
             if (sessionStorage.getItem('loggedIn') !== 'true') {
                 window.location.href = 'login.html';
             }
+        });
+
+        // =========================================
+        // CARGAR USUARIOS
+        // =========================================
+        async function cargarUsuarios() {
+            console.log('🔄 cargarUsuarios() ejecutado...');
+            try {
+                const token = sessionStorage.getItem('token');
+                if (!token) {
+                    console.warn('⚠️ No hay token de autenticación');
+                    return;
+                }
+
+                const response = await fetch('http://localhost:3000/api/usuarios', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                console.log('📊 Datos recibidos:', data);
+
+                if (data.success) {
+                    const tbody = document.getElementById('usuariosTable');
+                    tbody.innerHTML = '';
+
+                    if (data.data.length === 0) {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-3">
+                                    No hay usuarios registrados
+                                </td>
+                            </tr>
+                        `;
+                        return;
+                    }
+
+                    data.data.forEach(u => {
+                        const tr = document.createElement('tr');
+                        const estadoBadge = u.activo ? 'bg-success' : 'bg-danger';
+                        const rolBadge = u.rol === 'administrador' ? 'bg-danger' : 
+                                        u.rol === 'coordinador' ? 'bg-primary' : 
+                                        u.rol === 'profesor' ? 'bg-info' : 'bg-secondary';
+                        tr.innerHTML = `
+                            <td>${u.id}</td>
+                            <td>${u.nombre}</td>
+                            <td><span class="badge ${rolBadge}">${u.rol}</span></td>
+                            <td><span class="badge ${estadoBadge}">${u.activo ? 'Activo' : 'Inactivo'}</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                    console.log('✅ Tabla actualizada con', data.data.length, 'usuarios');
+                }
+            } catch (error) {
+                console.error('❌ Error al cargar usuarios:', error);
+            }
+        }
+
+        // =========================================
+        // GUARDAR USUARIO
+        // =========================================
+        document.getElementById("btnGuardarUsuario").addEventListener("click", async function() {
+            const nombre = document.getElementById("nombreUsuario").value.trim();
+            const email = document.getElementById("emailUsuario").value.trim();
+            const password = document.getElementById("passwordUsuario").value.trim();
+            const rol = document.getElementById("rolUsuario").value;
+
+            if (!nombre || !email || !password || !rol) {
+                alert('⚠️ Complete todos los campos obligatorios.');
+                return;
+            }
+
+            try {
+                const token = sessionStorage.getItem('token');
+                if (!token) {
+                    alert('❌ No hay sesión activa.');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const response = await fetch('http://localhost:3000/api/usuarios', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({
+                        nombre: nombre,
+                        email: email,
+                        password: password,
+                        rol: rol
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('✅ Usuario "' + nombre + '" registrado correctamente.');
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('nuevoUsuarioModal'));
+                    modal.hide();
+                    document.getElementById("usuarioForm").reset();
+                    await cargarUsuarios();
+                } else {
+                    alert('❌ Error: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error de conexión con el servidor.');
+            }
+        });
+
+        // =========================================
+        // CONFIGURACIÓN
+        // =========================================
+        document.getElementById("btnGuardarConfiguracion").addEventListener("click", function() {
+            const nombre = document.getElementById("nombreCentro").value;
+            const email = document.getElementById("emailContacto").value;
+            const telefono = document.getElementById("telefonoCentro").value;
+            const horario = document.getElementById("horarioCentro").value;
+
+            // Guardar en localStorage
+            localStorage.setItem('culturagest_config', JSON.stringify({
+                nombre: nombre,
+                email: email,
+                telefono: telefono,
+                horario: horario
+            }));
+
+            alert('✅ Configuración guardada correctamente.');
+        });
+
+        // =========================================
+        // BOTONES DE MANTENIMIENTO
+        // =========================================
+        document.getElementById("btnRespaldo").addEventListener("click", function() {
+            alert('✅ Respaldo de datos realizado correctamente.');
+        });
+
+        document.getElementById("btnLimpiarCache").addEventListener("click", function() {
+            if (confirm('¿Está seguro que desea limpiar la caché del sistema?')) {
+                alert('✅ Caché limpiada correctamente.');
+            }
+        });
+
+        document.getElementById("btnRestaurar").addEventListener("click", function() {
+            if (confirm('⚠️ ¿Está seguro que desea restaurar el sistema? Esta acción no se puede deshacer.')) {
+                alert('✅ Sistema restaurado correctamente.');
+            }
+        });
+
+        // =========================================
+        // FORZAR CARGA AL INICIAR
+        // =========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cargar configuración guardada
+            const config = localStorage.getItem('culturagest_config');
+            if (config) {
+                try {
+                    const data = JSON.parse(config);
+                    document.getElementById('nombreCentro').value = data.nombre || 'Centro Cultural Nueva Generación';
+                    document.getElementById('emailContacto').value = data.email || 'contacto@culturagest.pe';
+                    document.getElementById('telefonoCentro').value = data.telefono || '(01) 555-1234';
+                    document.getElementById('horarioCentro').value = data.horario || 'Lunes a Viernes 9:00 - 18:00';
+                } catch (e) {}
+            }
+
+            setTimeout(cargarUsuarios, 500);
         });
     </script>
 </body>

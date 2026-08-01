@@ -67,81 +67,50 @@
             </nav>
 
             <div class="container-fluid px-4 py-4">
-                <div class="card">
+                <!-- Filtros -->
+                <div class="card mb-4">
                     <div class="card-header">
                         <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Filtros de Reportes</h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <label class="form-label">Tipo de Reporte</label>
-                                <select class="form-select">
-                                    <option>Participantes</option>
-                                    <option>Talleres</option>
-                                    <option>Inscripciones</option>
-                                    <option>Asistencia</option>
+                                <select class="form-select" id="tipoReporte">
+                                    <option value="participantes">Participantes</option>
+                                    <option value="talleres">Talleres</option>
+                                    <option value="inscripciones">Inscripciones</option>
+                                    <option value="asistencia">Asistencia</option>
+                                    <option value="consultas">Consultas</option>
                                 </select>
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Fecha Inicio</label>
-                                <input type="date" class="form-control" value="2026-07-01">
+                                <input type="date" class="form-control" id="fechaInicio">
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Fecha Fin</label>
-                                <input type="date" class="form-control" value="2026-07-31">
+                                <input type="date" class="form-control" id="fechaFin">
                             </div>
-                            <div class="col-md-3">
-                                <label class="form-label">&nbsp;</label>
-                                <button class="btn btn-primary w-100"><i class="fas fa-file-pdf"></i> Generar Reporte</button>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button class="btn btn-primary w-100" id="btnGenerarReporte">
+                                    <i class="fas fa-file-pdf"></i> Generar
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="row mt-4">
-                    <div class="col-lg-6">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="mb-0"><i class="fas fa-users me-2"></i>Participantes por Taller</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Taller</th>
-                                                <th>Inscritos</th>
-                                                <th>% Ocupación</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="reporteTalleres">
-                                            <!-- Cargado desde la API -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+                <!-- Resultados -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Resultados</h5>
                     </div>
-                    <div class="col-lg-6">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="mb-0"><i class="fas fa-clipboard-check me-2"></i>Resumen de Asistencia</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Taller</th>
-                                                <th>Presentes</th>
-                                                <th>Ausentes</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="reporteAsistencia">
-                                            <!-- Cargado desde la API -->
-                                        </tbody>
-                                    </table>
-                                </div>
+                    <div class="card-body">
+                        <div id="resultadosReporte">
+                            <div class="text-center text-muted py-4">
+                                <i class="fas fa-chart-pie fa-3x mb-3"></i>
+                                <p>Seleccione un tipo de reporte y haga clic en "Generar"</p>
                             </div>
                         </div>
                     </div>
@@ -151,10 +120,11 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../js/scripts.js"></script>
     <script>
+        console.log('🚀 Script de reportes cargado correctamente');
+
         // =========================================
-        // 1. TOGGLE SIDEBAR
+        // TOGGLE SIDEBAR
         // =========================================
         document.getElementById("menu-toggle").addEventListener("click", function() {
             const sidebar = document.getElementById("sidebar-wrapper");
@@ -166,17 +136,23 @@
         });
 
         // =========================================
-        // 2. MOSTRAR NOMBRE Y ROL DE USUARIO
+        // MOSTRAR NOMBRE Y ROL
         // =========================================
         document.addEventListener('DOMContentLoaded', function() {
             const userName = sessionStorage.getItem('userName') || 'Usuario';
             const userRol = sessionStorage.getItem('userRol') || 'Administrador';
             document.getElementById('userNameDisplay').textContent = userName;
             document.getElementById('userRolDisplay').textContent = userRol;
+            // Fechas por defecto (último mes)
+            const hoy = new Date();
+            const haceUnMes = new Date();
+            haceUnMes.setMonth(haceUnMes.getMonth() - 1);
+            document.getElementById('fechaInicio').value = haceUnMes.toISOString().split('T')[0];
+            document.getElementById('fechaFin').value = hoy.toISOString().split('T')[0];
         });
 
         // =========================================
-        // 3. CERRAR SESIÓN
+        // CERRAR SESIÓN
         // =========================================
         document.getElementById('logoutBtn').addEventListener('click', function(e) {
             e.preventDefault();
@@ -191,13 +167,200 @@
         });
 
         // =========================================
-        // 4. REDIRIGIR A LOGIN SI NO ESTÁ LOGUEADO
+        // REDIRIGIR A LOGIN
         // =========================================
         document.addEventListener('DOMContentLoaded', function() {
             if (sessionStorage.getItem('loggedIn') !== 'true') {
                 window.location.href = 'login.html';
             }
         });
+
+        // =========================================
+        // GENERAR REPORTE
+        // =========================================
+        document.getElementById("btnGenerarReporte").addEventListener("click", async function() {
+            const tipo = document.getElementById("tipoReporte").value;
+            const fechaInicio = document.getElementById("fechaInicio").value;
+            const fechaFin = document.getElementById("fechaFin").value;
+
+            console.log('📊 Generando reporte:', tipo, fechaInicio, fechaFin);
+
+            try {
+                const token = sessionStorage.getItem('token');
+                if (!token) {
+                    alert('❌ No hay sesión activa.');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const headers = {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                };
+
+                let endpoint = '';
+                let titulo = '';
+
+                switch(tipo) {
+                    case 'participantes':
+                        endpoint = 'http://localhost:3000/api/participantes';
+                        titulo = 'Reporte de Participantes';
+                        break;
+                    case 'talleres':
+                        endpoint = 'http://localhost:3000/api/talleres';
+                        titulo = 'Reporte de Talleres';
+                        break;
+                    case 'inscripciones':
+                        endpoint = 'http://localhost:3000/api/inscripciones';
+                        titulo = 'Reporte de Inscripciones';
+                        break;
+                    case 'asistencia':
+                        endpoint = 'http://localhost:3000/api/asistencia';
+                        titulo = 'Reporte de Asistencia';
+                        break;
+                    case 'consultas':
+                        endpoint = 'http://localhost:3000/api/consultas';
+                        titulo = 'Reporte de Consultas';
+                        break;
+                    default:
+                        alert('Tipo de reporte no válido');
+                        return;
+                }
+
+                const response = await fetch(endpoint, { headers });
+                const data = await response.json();
+
+                console.log('📊 Datos del reporte:', data);
+
+                if (data.success) {
+                    mostrarResultados(titulo, data.data, tipo);
+                } else {
+                    alert('❌ Error al generar el reporte: ' + (data.error || 'Error desconocido'));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error de conexión con el servidor.');
+            }
+        });
+
+        // =========================================
+        // MOSTRAR RESULTADOS
+        // =========================================
+        function mostrarResultados(titulo, datos, tipo) {
+            const container = document.getElementById('resultadosReporte');
+
+            if (!datos || datos.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-exclamation-circle fa-3x mb-3"></i>
+                        <p>No se encontraron datos para el reporte seleccionado.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Generar tabla según el tipo
+            let headers = [];
+            let rows = '';
+
+            switch(tipo) {
+                case 'participantes':
+                    headers = ['ID', 'Nombre', 'Apellido', 'Email', 'Teléfono'];
+                    datos.forEach(d => {
+                        rows += `
+                            <tr>
+                                <td>${d.id}</td>
+                                <td>${d.nombre}</td>
+                                <td>${d.apellido}</td>
+                                <td>${d.email}</td>
+                                <td>${d.telefono || '-'}</td>
+                            </tr>
+                        `;
+                    });
+                    break;
+                case 'talleres':
+                    headers = ['ID', 'Nombre', 'Categoría', 'Cupos', 'Disponibles'];
+                    datos.forEach(d => {
+                        rows += `
+                            <tr>
+                                <td>${d.id}</td>
+                                <td>${d.nombre}</td>
+                                <td>${d.categoria}</td>
+                                <td>${d.cupos_maximos}</td>
+                                <td>${d.cupos_disponibles}</td>
+                            </tr>
+                        `;
+                    });
+                    break;
+                case 'inscripciones':
+                    headers = ['ID', 'Participante', 'Taller', 'Fecha', 'Estado'];
+                    datos.forEach(d => {
+                        rows += `
+                            <tr>
+                                <td>${d.id}</td>
+                                <td>${d.participante || 'ID ' + d.participante_id}</td>
+                                <td>${d.taller || 'ID ' + d.taller_id}</td>
+                                <td>${new Date(d.fecha_inscripcion).toLocaleDateString()}</td>
+                                <td><span class="badge ${d.estado === 'activo' ? 'bg-success' : 'bg-warning'}">${d.estado}</span></td>
+                            </tr>
+                        `;
+                    });
+                    break;
+                case 'asistencia':
+                    headers = ['ID', 'Participante', 'Taller', 'Fecha', 'Estado'];
+                    datos.forEach(d => {
+                        rows += `
+                            <tr>
+                                <td>${d.id}</td>
+                                <td>${d.participante || 'ID ' + d.inscripcion_id}</td>
+                                <td>${d.taller || '-'}</td>
+                                <td>${d.fecha}</td>
+                                <td><span class="badge ${d.presente ? 'bg-success' : 'bg-danger'}">${d.presente ? 'Presente' : 'Ausente'}</span></td>
+                            </tr>
+                        `;
+                    });
+                    break;
+                case 'consultas':
+                    headers = ['ID', 'Participante', 'Tipo', 'Descripción', 'Estado'];
+                    datos.forEach(d => {
+                        rows += `
+                            <tr>
+                                <td>${d.id}</td>
+                                <td>${d.participante || 'ID ' + d.participante_id}</td>
+                                <td>${d.tipo}</td>
+                                <td>${d.descripcion}</td>
+                                <td><span class="badge ${d.estado === 'atendido' ? 'bg-success' : 'bg-warning'}">${d.estado}</span></td>
+                            </tr>
+                        `;
+                    });
+                    break;
+                default:
+                    container.innerHTML = `<p>Tipo de reporte no reconocido</p>`;
+                    return;
+            }
+
+            container.innerHTML = `
+                <h6 class="mb-3">${titulo}</h6>
+                <p class="text-muted small">Total de registros: ${datos.length}</p>
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                ${headers.map(h => `<th>${h}</th>`).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rows}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-3">
+                    <button class="btn btn-outline-secondary btn-sm" onclick="window.print()">
+                        <i class="fas fa-print"></i> Imprimir
+                    </button>
+                </div>
+            `;
+        }
     </script>
 </body>
 </html>

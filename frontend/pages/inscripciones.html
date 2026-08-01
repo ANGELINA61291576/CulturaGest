@@ -67,52 +67,56 @@
             </nav>
 
             <div class="container-fluid px-4 py-4">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="mb-0"><i class="fas fa-users me-2"></i>Alumnos Disponibles</h5>
-                            </div>
-                            <div class="card-body" id="alumnosDisponibles">
-                                <!-- Cargado desde la API -->
-                            </div>
-                        </div>
+                <!-- Formulario de inscripción -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Nueva Inscripción</h5>
                     </div>
-                    <div class="col-lg-6">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="mb-0"><i class="fas fa-chalkboard-teacher me-2"></i>Talleres Disponibles</h5>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label class="form-label">Participante (Alumno)</label>
+                                <select class="form-select" id="participante_id">
+                                    <option value="">Seleccionar...</option>
+                                </select>
                             </div>
-                            <div class="card-body" id="talleresDisponibles">
-                                <!-- Cargado desde la API -->
+                            <div class="col-md-5">
+                                <label class="form-label">Taller</label>
+                                <select class="form-select" id="taller_id">
+                                    <option value="">Seleccionar...</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button class="btn btn-primary w-100" id="btnInscribir">
+                                    <i class="fas fa-pen-square"></i> Inscribir
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="row mt-4">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="mb-0"><i class="fas fa-list me-2"></i>Inscripciones Realizadas</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover">
-                                        <thead class="table-dark">
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Participante</th>
-                                                <th>Taller</th>
-                                                <th>Fecha</th>
-                                                <th>Estado</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="inscripcionesTable">
-                                            <!-- Cargado desde la API -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+
+                <!-- Tabla de inscripciones -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-list me-2"></i>Inscripciones Realizadas</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Participante</th>
+                                        <th>Taller</th>
+                                        <th>Fecha</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="inscripcionesTable">
+                                    <!-- Los datos se cargan desde la API -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -121,10 +125,11 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../js/scripts.js"></script>
     <script>
+        console.log('🚀 Script de inscripciones cargado correctamente');
+
         // =========================================
-        // 1. TOGGLE SIDEBAR
+        // TOGGLE SIDEBAR
         // =========================================
         document.getElementById("menu-toggle").addEventListener("click", function() {
             const sidebar = document.getElementById("sidebar-wrapper");
@@ -136,7 +141,7 @@
         });
 
         // =========================================
-        // 2. MOSTRAR NOMBRE Y ROL DE USUARIO
+        // MOSTRAR NOMBRE Y ROL
         // =========================================
         document.addEventListener('DOMContentLoaded', function() {
             const userName = sessionStorage.getItem('userName') || 'Usuario';
@@ -146,7 +151,7 @@
         });
 
         // =========================================
-        // 3. CERRAR SESIÓN
+        // CERRAR SESIÓN
         // =========================================
         document.getElementById('logoutBtn').addEventListener('click', function(e) {
             e.preventDefault();
@@ -161,12 +166,241 @@
         });
 
         // =========================================
-        // 4. REDIRIGIR A LOGIN SI NO ESTÁ LOGUEADO
+        // REDIRIGIR A LOGIN
         // =========================================
         document.addEventListener('DOMContentLoaded', function() {
             if (sessionStorage.getItem('loggedIn') !== 'true') {
                 window.location.href = 'login.html';
             }
+        });
+
+        // =========================================
+        // CARGAR PARTICIPANTES PARA EL SELECT
+        // =========================================
+        async function cargarParticipantesSelect() {
+            try {
+                const token = sessionStorage.getItem('token');
+                if (!token) return;
+
+                const response = await fetch('http://localhost:3000/api/participantes', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    const select = document.getElementById('participante_id');
+                    select.innerHTML = '<option value="">Seleccionar...</option>';
+                    data.data.forEach(p => {
+                        const option = document.createElement('option');
+                        option.value = p.id;
+                        option.textContent = p.nombre + ' ' + p.apellido;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error al cargar participantes:', error);
+            }
+        }
+
+        // =========================================
+        // CARGAR TALLERES PARA EL SELECT
+        // =========================================
+        async function cargarTalleresSelect() {
+            try {
+                const token = sessionStorage.getItem('token');
+                if (!token) return;
+
+                const response = await fetch('http://localhost:3000/api/talleres', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    const select = document.getElementById('taller_id');
+                    select.innerHTML = '<option value="">Seleccionar...</option>';
+                    data.data.forEach(t => {
+                        const option = document.createElement('option');
+                        option.value = t.id;
+                        option.textContent = t.nombre + ' (' + t.cupos_disponibles + ' cupos)';
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error al cargar talleres:', error);
+            }
+        }
+
+        // =========================================
+        // CARGAR INSCRIPCIONES
+        // =========================================
+        async function cargarInscripciones() {
+            console.log('🔄 cargarInscripciones() ejecutado...');
+            try {
+                const token = sessionStorage.getItem('token');
+                if (!token) {
+                    console.warn('⚠️ No hay token de autenticación');
+                    return;
+                }
+
+                const response = await fetch('http://localhost:3000/api/inscripciones', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                console.log('📊 Datos recibidos:', data);
+
+                if (data.success) {
+                    const tbody = document.getElementById('inscripcionesTable');
+                    tbody.innerHTML = '';
+
+                    if (data.data.length === 0) {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-3">
+                                    No hay inscripciones registradas
+                                </td>
+                            </tr>
+                        `;
+                        return;
+                    }
+
+                    data.data.forEach(i => {
+                        const tr = document.createElement('tr');
+                        const estadoBadge = i.estado === 'activo' ? 'bg-success' : 'bg-warning';
+                        tr.innerHTML = `
+                            <td>${i.id}</td>
+                            <td>${i.participante || 'ID ' + i.participante_id}</td>
+                            <td>${i.taller || 'ID ' + i.taller_id}</td>
+                            <td>${new Date(i.fecha_inscripcion).toLocaleDateString()}</td>
+                            <td><span class="badge ${estadoBadge}">${i.estado}</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-danger cancelar-inscripcion" data-id="${i.id}">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+
+                    // Eventos para cancelar inscripción
+                    document.querySelectorAll('.cancelar-inscripcion').forEach(btn => {
+                        btn.addEventListener('click', cancelarInscripcion);
+                    });
+                }
+            } catch (error) {
+                console.error('❌ Error al cargar inscripciones:', error);
+            }
+        }
+
+        // =========================================
+        // INSCRIBIR PARTICIPANTE
+        // =========================================
+        document.getElementById("btnInscribir").addEventListener("click", async function() {
+            const participante_id = document.getElementById("participante_id").value;
+            const taller_id = document.getElementById("taller_id").value;
+
+            if (!participante_id || !taller_id) {
+                alert('⚠️ Seleccione un participante y un taller.');
+                return;
+            }
+
+            try {
+                const token = sessionStorage.getItem('token');
+                if (!token) {
+                    alert('❌ No hay sesión activa.');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const response = await fetch('http://localhost:3000/api/inscripciones', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({
+                        participante_id: parseInt(participante_id),
+                        taller_id: parseInt(taller_id)
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('✅ Inscripción realizada correctamente.');
+                    // Recargar selects y tabla
+                    await Promise.all([
+                        cargarParticipantesSelect(),
+                        cargarTalleresSelect(),
+                        cargarInscripciones()
+                    ]);
+                } else {
+                    alert('❌ Error: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error de conexión con el servidor.');
+            }
+        });
+
+        // =========================================
+        // CANCELAR INSCRIPCIÓN
+        // =========================================
+        async function cancelarInscripcion(e) {
+            const id = e.currentTarget.dataset.id;
+            if (!confirm('¿Está seguro que desea cancelar esta inscripción?')) return;
+
+            try {
+                const token = sessionStorage.getItem('token');
+                if (!token) {
+                    alert('❌ No hay sesión activa.');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const response = await fetch(`http://localhost:3000/api/inscripciones/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('✅ Inscripción cancelada correctamente.');
+                    await Promise.all([
+                        cargarTalleresSelect(),
+                        cargarInscripciones()
+                    ]);
+                } else {
+                    alert('❌ Error: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error de conexión con el servidor.');
+            }
+        }
+
+        // =========================================
+        // FORZAR CARGA AL INICIAR
+        // =========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                cargarParticipantesSelect();
+                cargarTalleresSelect();
+                cargarInscripciones();
+            }, 500);
         });
     </script>
 </body>
