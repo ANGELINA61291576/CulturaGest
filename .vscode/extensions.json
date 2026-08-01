@@ -1,0 +1,9 @@
+{
+    "recommendations": [
+        "mhutchie.git-graph",
+        "eamodio.gitlens",
+        "github.vscode-pull-request-github",
+        "PKief.material-icon-theme",
+        "ms-vscode.vscode-github-issue-notebooks"
+    ]
+}

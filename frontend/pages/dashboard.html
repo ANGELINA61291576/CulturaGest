@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CulturaGest - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar -->
+        <div class="bg-dark text-white" id="sidebar-wrapper" style="min-height: 100vh; width: 260px; flex-shrink: 0;">
+            <div class="sidebar-heading text-center py-4 primary-text fs-4 fw-bold text-uppercase border-bottom border-secondary">
+                <i class="fas fa-landmark me-2"></i>CulturaGest
+            </div>
+            <div class="list-group list-group-flush my-3">
+                <a href="dashboard.html" class="list-group-item list-group-item-action bg-transparent text-white active">
+                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                </a>
+                <a href="participantes.html" class="list-group-item list-group-item-action bg-transparent text-white">
+                    <i class="fas fa-users me-2"></i>Participantes
+                </a>
+                <a href="talleres.html" class="list-group-item list-group-item-action bg-transparent text-white">
+                    <i class="fas fa-chalkboard-teacher me-2"></i>Talleres
+                </a>
+                <a href="profesores.html" class="list-group-item list-group-item-action bg-transparent text-white">
+                    <i class="fas fa-user-tie me-2"></i>Profesores
+                </a>
+                <a href="inscripciones.html" class="list-group-item list-group-item-action bg-transparent text-white">
+                    <i class="fas fa-pen-square me-2"></i>Inscripciones
+                </a>
+                <a href="asistencia.html" class="list-group-item list-group-item-action bg-transparent text-white">
+                    <i class="fas fa-clipboard-check me-2"></i>Asistencia
+                </a>
+                <a href="consultas.html" class="list-group-item list-group-item-action bg-transparent text-white">
+                    <i class="fas fa-question-circle me-2"></i>Consultas
+                </a>
+                <a href="reportes.html" class="list-group-item list-group-item-action bg-transparent text-white">
+                    <i class="fas fa-chart-bar me-2"></i>Reportes
+                </a>
+                <a href="administracion.html" class="list-group-item list-group-item-action bg-transparent text-white">
+                    <i class="fas fa-cog me-2"></i>Administración
+                </a>
+            </div>
+            <div class="list-group list-group-flush my-3 border-top border-secondary">
+                <a href="login.html" class="list-group-item list-group-item-action bg-transparent text-danger" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                </a>
+            </div>
+        </div>
+
+        <!-- Contenido principal -->
+        <div id="page-content-wrapper" class="w-100">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom px-4">
+                <div class="container-fluid">
+                    <button class="btn btn-primary" id="menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <span class="navbar-brand ms-3 fw-semibold">Dashboard</span>
+                    <div class="d-flex align-items-center ms-auto">
+                        <span class="me-3"><i class="fas fa-user-circle fa-lg"></i> <span id="userNameDisplay">Usuario</span></span>
+                        <span class="badge bg-primary" id="userRolDisplay">Administrador</span>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container-fluid px-4 py-4">
+                <!-- Tarjetas de resumen -->
+                <div class="row g-4 mb-4">
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-primary text-white h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-0 text-white-50">Participantes</h6>
+                                        <h2 class="mb-0 fw-bold" id="totalParticipantes">0</h2>
+                                    </div>
+                                    <i class="fas fa-users fa-3x opacity-50"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-success text-white h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-0 text-white-50">Talleres</h6>
+                                        <h2 class="mb-0 fw-bold" id="totalTalleres">0</h2>
+                                    </div>
+                                    <i class="fas fa-chalkboard-teacher fa-3x opacity-50"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-warning text-dark h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-0 text-dark-50">Inscripciones</h6>
+                                        <h2 class="mb-0 fw-bold" id="totalInscripciones">0</h2>
+                                    </div>
+                                    <i class="fas fa-pen-square fa-3x opacity-50"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-danger text-white h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-0 text-white-50">Asistencia Hoy</h6>
+                                        <h2 class="mb-0 fw-bold" id="totalAsistencia">0%</h2>
+                                    </div>
+                                    <i class="fas fa-clipboard-check fa-3x opacity-50"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Próximos Talleres y Notificaciones -->
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <div class="card h-100">
+                            <div class="card-header fw-semibold">
+                                <i class="fas fa-calendar-alt me-2"></i> Próximos Talleres
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Taller de Música
+                                        <span class="badge bg-primary">Lunes 10:00</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Taller de Danza
+                                        <span class="badge bg-success">Martes 14:00</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Taller de Pintura
+                                        <span class="badge bg-warning">Miércoles 09:00</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Taller de Teatro
+                                        <span class="badge bg-info">Jueves 16:00</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Taller de Lectura
+                                        <span class="badge bg-secondary">Viernes 11:00</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card h-100">
+                            <div class="card-header fw-semibold">
+                                <i class="fas fa-bell me-2"></i> Notificaciones
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i> 2 inscripciones pendientes
+                                </div>
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle"></i> 1 taller con cupos agotados
+                                </div>
+                                <div class="alert alert-success">
+                                    <i class="fas fa-check-circle"></i> Registro de asistencia completado
+                                </div>
+                                <div class="alert alert-secondary">
+                                    <i class="fas fa-clock"></i> Próximo taller en 2 horas
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/scripts.js"></script>
+    <script>
+        // =========================================
+        // 1. TOGGLE SIDEBAR
+        // =========================================
+        document.getElementById("menu-toggle").addEventListener("click", function() {
+            const sidebar = document.getElementById("sidebar-wrapper");
+            if (sidebar.style.display === "none") {
+                sidebar.style.display = "block";
+            } else {
+                sidebar.style.display = "none";
+            }
+        });
+
+        // =========================================
+        // 2. MOSTRAR NOMBRE Y ROL DE USUARIO
+        // =========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const userName = sessionStorage.getItem('userName') || 'Usuario';
+            const userRol = sessionStorage.getItem('userRol') || 'Administrador';
+            document.getElementById('userNameDisplay').textContent = userName;
+            document.getElementById('userRolDisplay').textContent = userRol;
+        });
+
+        // =========================================
+        // 3. CERRAR SESIÓN
+        // =========================================
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm('¿Está seguro que desea cerrar sesión?')) {
+                sessionStorage.removeItem('loggedIn');
+                sessionStorage.removeItem('userEmail');
+                sessionStorage.removeItem('userName');
+                sessionStorage.removeItem('userRol');
+                sessionStorage.removeItem('token');
+                window.location.href = 'login.html';
+            }
+        });
+
+        // =========================================
+        // 4. REDIRIGIR A LOGIN SI NO ESTÁ LOGUEADO
+        // =========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            if (sessionStorage.getItem('loggedIn') !== 'true') {
+                window.location.href = 'login.html';
+            }
+        });
+
+        // =========================================
+        // 5. CARGAR DATOS REALES DEL DASHBOARD (VERSIÓN FUERTE)
+        // =========================================
+        async function cargarDashboard() {
+            console.log('🔄 Cargando datos del dashboard...');
+
+            const token = sessionStorage.getItem('token');
+            if (!token) {
+                console.warn('⚠️ No hay token de autenticación');
+                return;
+            }
+
+            const headers = {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            };
+
+            // Función auxiliar para actualizar el DOM
+            function actualizarElemento(id, valor) {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.textContent = valor;
+                    console.log(`✅ ${id}: ${valor}`);
+                } else {
+                    console.warn(`⚠️ Elemento ${id} no encontrado`);
+                }
+            }
+
+            // 1. Participantes
+            try {
+                const res = await fetch('http://localhost:3000/api/participantes', { headers });
+                const data = await res.json();
+                if (data.success) {
+                    actualizarElemento('totalParticipantes', data.data.length);
+                }
+            } catch (e) {
+                console.error('❌ Error participantes:', e);
+            }
+
+            // 2. Talleres
+            try {
+                const res = await fetch('http://localhost:3000/api/talleres', { headers });
+                const data = await res.json();
+                if (data.success) {
+                    actualizarElemento('totalTalleres', data.data.length);
+                }
+            } catch (e) {
+                console.error('❌ Error talleres:', e);
+            }
+
+            // 3. Inscripciones
+            try {
+                const res = await fetch('http://localhost:3000/api/inscripciones', { headers });
+                const data = await res.json();
+                if (data.success) {
+                    actualizarElemento('totalInscripciones', data.data.length);
+                }
+            } catch (e) {
+                console.error('❌ Error inscripciones:', e);
+            }
+
+            // 4. Asistencia (promedio)
+            try {
+                const res = await fetch('http://localhost:3000/api/asistencia', { headers });
+                const data = await res.json();
+                if (data.success) {
+                    const total = data.data.length;
+                    const presentes = data.data.filter(a => a.presente === 1).length;
+                    const porcentaje = total > 0 ? Math.round((presentes / total) * 100) : 0;
+                    actualizarElemento('totalAsistencia', porcentaje + '%');
+                }
+            } catch (e) {
+                console.error('❌ Error asistencia:', e);
+            }
+        }
+
+        // =========================================
+        // 6. CARGAR AL INICIAR LA PÁGINA
+        // =========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Esperar un poco para asegurar que el DOM está listo
+            setTimeout(cargarDashboard, 300);
+        });
+    </script>
+</body>
+</html>

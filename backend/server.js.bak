@@ -1,0 +1,105 @@
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+
+// =========================================
+// ✅ TODAS LAS RUTAS IMPORTADAS
+// =========================================
+const participanteRoutes = require('./routes/participantes');
+const profesorRoutes = require('./routes/profesores');
+const tallerRoutes = require('./routes/talleres');
+const horarioRoutes = require('./routes/horarios');
+const inscripcionRoutes = require('./routes/inscripciones');
+const asistenciaRoutes = require('./routes/asistencia');
+const consultaRoutes = require('./routes/consultas');
+const usuarioRoutes = require('./routes/usuarios');
+const reporteRoutes = require('./routes/reportes');
+
+// =========================================
+// CONFIGURACIÓN
+// =========================================
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// =========================================
+// MIDDLEWARES
+// =========================================
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// =========================================
+// ✅ SERVIDOR DE ARCHIVOS ESTÁTICOS (FRONTEND)
+// =========================================
+app.use(express.static(path.join(__dirname, '../frontend')));
+
+// =========================================
+// RUTAS DE LA API
+// =========================================
+
+// Ruta de salud
+app.get('/api/health', (req, res) => {
+    res.json({
+        status: 'ok',
+        message: 'CulturaGest API funcionando',
+        timestamp: new Date().toISOString()
+    });
+});
+
+// Ruta raíz - SIRVE EL INDEX.HTML
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/index.html'));
+});
+
+// =========================================
+// ✅ TODAS LAS RUTAS DE LA API
+// =========================================
+app.use('/api/participantes', participanteRoutes);
+app.use('/api/profesores', profesorRoutes);
+app.use('/api/talleres', tallerRoutes);
+app.use('/api/horarios', horarioRoutes);
+app.use('/api/inscripciones', inscripcionRoutes);
+app.use('/api/asistencia', asistenciaRoutes);
+app.use('/api/consultas', consultaRoutes);
+app.use('/api/usuarios', usuarioRoutes);
+app.use('/api/reportes', reporteRoutes);
+
+// =========================================
+// MANEJO DE ERRORES
+// =========================================
+
+// 404 - Ruta no encontrada
+app.use((req, res) => {
+    res.status(404).json({
+        success: false,
+        error: 'Ruta no encontrada',
+        path: req.originalUrl
+    });
+});
+
+// 500 - Error del servidor
+app.use((err, req, res, next) => {
+    console.error('❌ Error:', err.message);
+    res.status(500).json({
+        success: false,
+        error: 'Error interno del servidor',
+        message: err.message
+    });
+});
+
+// =========================================
+// INICIAR SERVIDOR
+// =========================================
+app.listen(PORT, () => {
+    console.log(`🚀 Servidor CulturaGest corriendo en http://localhost:${PORT}`);
+    console.log(`📊 API Health: http://localhost:${PORT}/api/health`);
+    console.log(`📋 Participantes: http://localhost:${PORT}/api/participantes`);
+    console.log(`👨‍🏫 Profesores: http://localhost:${PORT}/api/profesores`);
+    console.log(`📚 Talleres: http://localhost:${PORT}/api/talleres`);
+    console.log(`📝 Inscripciones: http://localhost:${PORT}/api/inscripciones`);
+    console.log(`✅ Asistencia: http://localhost:${PORT}/api/asistencia`);
+    console.log(`❓ Consultas: http://localhost:${PORT}/api/consultas`);
+    console.log(`👤 Usuarios: http://localhost:${PORT}/api/usuarios`);
+    console.log(`📊 Reportes: http://localhost:${PORT}/api/reportes`);
+    console.log(`🌐 Frontend: http://localhost:${PORT}`);
+});
